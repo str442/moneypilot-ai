@@ -8,7 +8,7 @@ import com.moneypilot.model.TransactionType;
 
 
 public class TransactionResponse {
-    private int id;
+    private Long id;
     private String description;
     private double amount;
     private TransactionCategory category;
@@ -20,11 +20,22 @@ public class TransactionResponse {
         //construtor vazio
     }
 
-    public int getId() {
+    public TransactionResponse(Long id, String description, double amount, TransactionCategory category,
+                           TransactionType type, LocalDate date, LocalDateTime createdAt) {
+        this.id = id;
+        this.description = description;
+        this.amount = amount;
+        this.category = category;
+        this.type = type;
+        this.date = date;
+        this.createdAt = createdAt;
+    }
+
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
