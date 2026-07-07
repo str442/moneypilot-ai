@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.moneypilot.dto.CreateTransactionRequest;
 import com.moneypilot.dto.TransactionResponse;
+import com.moneypilot.exception.ResourceNotFoundException;
 import com.moneypilot.model.Transaction;
 import com.moneypilot.model.User;
 import com.moneypilot.repository.TransactionRepository;
@@ -24,7 +25,7 @@ public class TransactionService {
 
     public TransactionResponse createTransaction(Long userId, CreateTransactionRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         Transaction transaction = new Transaction(
                 request.getDescription(),

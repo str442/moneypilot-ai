@@ -13,6 +13,8 @@ import com.moneypilot.dto.CreateTransactionRequest;
 import com.moneypilot.dto.TransactionResponse;
 import com.moneypilot.service.TransactionService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users/{userId}/transactions")
 public class TransactionController {
@@ -26,7 +28,7 @@ public class TransactionController {
     @PostMapping
     public TransactionResponse createTransaction(
             @PathVariable Long userId,
-            @RequestBody CreateTransactionRequest request
+            @Valid @RequestBody CreateTransactionRequest request
     ) {
         return transactionService.createTransaction(userId, request);
     }

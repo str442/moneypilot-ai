@@ -12,6 +12,8 @@ import com.moneypilot.dto.CreateUserRequest;
 import com.moneypilot.dto.UserResponse;
 import com.moneypilot.service.UserService;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -23,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping
-    public UserResponse createUser(@RequestBody CreateUserRequest request) {
+    public UserResponse createUser(@Valid @RequestBody CreateUserRequest request) {
         return userService.createUser(request);
     }
 

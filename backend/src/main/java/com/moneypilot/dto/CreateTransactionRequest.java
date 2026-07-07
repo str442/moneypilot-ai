@@ -5,12 +5,25 @@ import java.time.LocalDate;
 import com.moneypilot.model.TransactionCategory;
 import com.moneypilot.model.TransactionType;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
 public class CreateTransactionRequest {
 
+    @NotBlank(message = "Description is required")
     private String description;
+
+    @Positive(message = "Amount must be greater than zero")
     private double amount;
+
+    @NotNull(message = "Category is required")
     private TransactionCategory category;
+
+    @NotNull(message = "Type is required")
     private TransactionType type;
+
+    @NotNull(message = "Date is required")
     private LocalDate date;
 
     public CreateTransactionRequest() {
