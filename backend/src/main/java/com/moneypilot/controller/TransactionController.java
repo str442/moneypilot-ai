@@ -56,7 +56,8 @@ public class TransactionController {
         @RequestParam(required = false) TransactionCategory category,
         @RequestParam(required = false) Double minAmount,
         @RequestParam(required = false) LocalDate startDate,
-        @RequestParam(required = false) LocalDate endDate
+        @RequestParam(required = false) LocalDate endDate,
+        @RequestParam(required = false) String sort
     ) {
         return transactionService.getTransactionsByUserId(
                 userId,
@@ -64,7 +65,8 @@ public class TransactionController {
                 category,
                 minAmount,
                 startDate,
-                endDate
+                endDate,
+                sort
         );
     }
 

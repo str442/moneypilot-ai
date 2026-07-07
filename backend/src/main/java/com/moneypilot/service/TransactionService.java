@@ -1,6 +1,7 @@
 package com.moneypilot.service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -79,7 +80,8 @@ public class TransactionService {
         TransactionCategory category,
         Double minAmount,
         LocalDate startDate,
-        LocalDate endDate
+        LocalDate endDate,
+        String sort
     ) {
         userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
@@ -119,6 +121,34 @@ public class TransactionService {
             transactions = transactions.stream()
                     .filter(transaction -> !transaction.getDate().isAfter(endDate))
                     .toList();
+        }
+
+        if (sort != null) {
+            switch (sort) {
+                case "dateDesc" ->
+                        transactions = transactions.stream()
+                                .sorted(Comparator.comparing(Transaction::getDate).reversed())
+                                .toList();
+
+                case "dateAsc" ->
+                        transactions = transactions.stream()
+                                .sorted(Comparator.comparing(Transaction::getDate))
+                                .toList();
+
+                case "amountDesc" ->
+                        transactions = transactions.stream()
+                                .sorted(Comparator.comparingDouble(Transaction::getAmount).reversed())
+                                .toList();
+
+                case "amountAsc" ->
+                        transactions = transactions.stream()
+                                .sorted(Comparator.comparingDouble(Transaction::getAmount))
+                                .toList();
+
+                default -> throw new IllegalArgumentException(
+                        "Invalid sort value. Use dateDesc, dateAsc, amountDesc or amountAsc"
+                );
+            }
         }
 
         return transactions.stream()
