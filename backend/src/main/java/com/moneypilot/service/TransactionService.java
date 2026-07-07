@@ -18,9 +18,18 @@ public class TransactionService {
     private final TransactionRepository transactionRep;
     private final UserRepository userRepository;
 
+    
+
     public TransactionService(TransactionRepository transactionRep, UserRepository userRepository) {
         this.transactionRep = transactionRep;
         this.userRepository = userRepository;
+    }
+
+    public void deleteTransaction(Long userId, Long transactionId) {
+        Transaction transaction = transactionRep.findByIdAndUserId(transactionId, userId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
+
+        transactionRep.delete(transaction);
     }
 
     public TransactionResponse createTransaction(Long userId, CreateTransactionRequest request) {
