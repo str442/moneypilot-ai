@@ -21,15 +21,23 @@ public class TransactionService {
 
     private final TransactionRepository transactionRep;
     private final UserRepository userRepository;
+    private final AuthorizationService authorizationService;
 
     
 
-    public TransactionService(TransactionRepository transactionRep, UserRepository userRepository) {
+    public TransactionService(
+            TransactionRepository transactionRep,
+            UserRepository userRepository,
+            AuthorizationService authorizationService
+    ) {
         this.transactionRep = transactionRep;
         this.userRepository = userRepository;
+        this.authorizationService = authorizationService;
     }
 
     public void deleteTransaction(Long userId, Long transactionId) {
+        authorizationService.requireSelfOrAdmin(userId);
+
         Transaction transaction = transactionRep.findByIdAndUserId(transactionId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
@@ -41,6 +49,8 @@ public class TransactionService {
         Long transactionId,
         CreateTransactionRequest request
     ) {
+        authorizationService.requireSelfOrAdmin(userId);
+
         Transaction transaction = transactionRep.findByIdAndUserId(transactionId, userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Transaction not found"));
 
@@ -56,6 +66,8 @@ public class TransactionService {
     }
 
     public TransactionResponse createTransaction(Long userId, CreateTransactionRequest request) {
+        authorizationService.requireSelfOrAdmin(userId);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
@@ -83,6 +95,8 @@ public class TransactionService {
         LocalDate endDate,
         String sort
     ) {
+        authorizationService.requireSelfOrAdmin(userId);
+
         userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 

@@ -1,20 +1,24 @@
 package com.moneypilot.dto;
 
+import com.moneypilot.model.Role;
+
 public class AuthResponse {
 
     private String token;
     private Long userId;
     private String name;
     private String email;
+    private Role role;
 
     public AuthResponse() {
     }
 
-    public AuthResponse(String token, Long userId, String name, String email) {
+    public AuthResponse(String token, Long userId, String name, String email, Role role) {
         this.token = token;
         this.userId = userId;
         this.name = name;
         this.email = email;
+        this.role = role;
     }
 
     public String getToken() {
@@ -33,6 +37,10 @@ public class AuthResponse {
         return email;
     }
 
+    public Role getRole() {
+        return role;
+    }
+
     public void setToken(String token) {
         this.token = token;
     }
@@ -47,5 +55,9 @@ public class AuthResponse {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import com.moneypilot.dto.AuthResponse;
 import com.moneypilot.dto.LoginRequest;
 import com.moneypilot.dto.RegisterRequest;
+import com.moneypilot.model.Role;
 import com.moneypilot.model.User;
 import com.moneypilot.repository.UserRepository;
 
@@ -38,6 +39,7 @@ public class AuthService {
                 request.getEmail(),
                 encodedPassword
         );
+        user.setRole(Role.USER);
 
         User savedUser = userRepository.save(user);
 
@@ -47,7 +49,8 @@ public class AuthService {
                 token,
                 savedUser.getId(),
                 savedUser.getName(),
-                savedUser.getEmail()
+                savedUser.getEmail(),
+                savedUser.getRole()
         );
     }
 
@@ -70,7 +73,8 @@ public class AuthService {
                 token,
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getRole()
         );
     }
 }

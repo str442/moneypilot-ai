@@ -18,6 +18,11 @@ const currency = new Intl.NumberFormat('en-US', {
   currency: 'EUR',
 });
 
+function percentClass(percent) {
+  const roundedPercent = Math.max(0, Math.min(100, Math.round(percent / 5) * 5));
+  return `progress-fill percent-${roundedPercent}`;
+}
+
 export default function CategoryBreakdown({ expensesByCategory = {} }) {
   const entries = Object.entries(expensesByCategory).filter(([, amount]) => Number(amount) > 0);
   const total = entries.reduce((sum, [, amount]) => sum + Number(amount), 0);
@@ -47,8 +52,15 @@ export default function CategoryBreakdown({ expensesByCategory = {} }) {
                   <span>{labels[category] || category}</span>
                   <strong>{currency.format(amount)}</strong>
                 </div>
-                <div className="progress-track" aria-label={`${labels[category] || category}: ${percent}%`}>
-                  <span style={{ width: `${percent}%` }} />
+                <div
+                  className="progress-track"
+                  aria-label={`${labels[category] || category}: ${percent}%`}
+                  aria-valuemax="100"
+                  aria-valuemin="0"
+                  aria-valuenow={percent}
+                  role="progressbar"
+                >
+                  <span className={percentClass(percent)} />
                 </div>
               </div>
             );

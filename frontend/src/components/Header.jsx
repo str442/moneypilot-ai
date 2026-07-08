@@ -1,14 +1,15 @@
-export default function Header() {
+export default function Header({ user, onLogout }) {
   return (
     <header className="app-header">
       <div>
-        <span className="eyebrow">MVP Preview</span>
-        <h1>MoneyPilot AI</h1>
-        <p>Your smart personal finance dashboard</p>
+        <span className="eyebrow">Live dashboard</span>
+        <h1>MoneyPilot</h1>
+        <p>Welcome back, {user?.name || 'there'}. Your money is clearer, calmer, and under control.</p>
       </div>
-      <div className="pilot-orb" aria-hidden="true">
-        <span>AI</span>
-      </div>
+
+      <button className="logout-button" type="button" onClick={onLogout}>
+        Logout
+      </button>
     </header>
   );
 }

@@ -1,72 +1,124 @@
 export const API_BASE_URL = 'http://localhost:8080';
-export const CURRENT_USER_ID = 1;
 
-async function request(path, options = {}) {
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-    ...options,
-  });
+export class ApiError extends Error {
+  constructor(message, status) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
 
-  if (response.status === 204) {
-    return null;
+async function parseResponse(response) {
+  if (response.status === 204) return null;
+
+  const contentType = response.headers.get('content-type') || '';
+  if (contentType.includes('application/json')) {
+    return response.json();
   }
 
-  const contentType = response.headers.get('content-type');
-  const data = contentType?.includes('application/json')
-    ? await response.json()
-    : await response.text();
+  return response.text();
+}
+
+async function request(path, options = {}) {
+  const headers = {
+    ...(options.headers || {}),
+  };
+
+  if (options.body && !headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
+  }
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers,
+  });
+
+  const data = await parseResponse(response);
 
   if (!response.ok) {
     const message =
       typeof data === 'string'
-        ? data
+        ? data || 'Something went wrong while talking to the API.'
         : data?.message || data?.error || 'Something went wrong while talking to the API.';
-    throw new Error(message);
+
+    throw new ApiError(message, response.status);
   }
 
   return data;
 }
 
-function buildQuery(filters = {}) {
-  const params = new URLSearchParams();
+function authHeaders(token) {
+  return {
+    Authorization: `Bearer ${token}`,
+  };
+}
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value && value !== 'ALL' && value !== 'NONE') {
-      params.set(key, value);
-    }
+function normalizeFilterValue(value) {
+  if (value === 'ALL' || value === 'NONE' || value === undefined || value === null || value === '') {
+    return '';
+  }
+
+  return String(value);
+}
+
+export function buildQuery(filters = {}) {
+  const params = new URLSearchParams();
+  const allowedFilters = ['type', 'category', 'minAmount', 'startDate', 'endDate', 'sort'];
+
+  allowedFilters.forEach((key) => {
+    const value = normalizeFilterValue(filters[key]);
+    if (value) params.set(key, value);
   });
 
   const query = params.toString();
   return query ? `?${query}` : '';
 }
 
-export function getDashboard(userId = CURRENT_USER_ID) {
-  return request(`/api/users/${userId}/dashboard`);
+export function registerUser(data) {
+  return request('/api/auth/register', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 }
 
-export function getTransactions(filters, userId = CURRENT_USER_ID) {
-  return request(`/api/users/${userId}/transactions${buildQuery(filters)}`);
+export function loginUser(data) {
+  return request('/api/auth/login', {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
 }
 
-export function createTransaction(transaction, userId = CURRENT_USER_ID) {
+export function getDashboard(userId, token) {
+  return request(`/api/users/${userId}/dashboard`, {
+    headers: authHeaders(token),
+  });
+}
+
+export function getTransactions(userId, token, filters = {}) {
+  return request(`/api/users/${userId}/transactions${buildQuery(filters)}`, {
+    headers: authHeaders(token),
+  });
+}
+
+export function createTransaction(userId, token, transaction) {
   return request(`/api/users/${userId}/transactions`, {
     method: 'POST',
+    headers: authHeaders(token),
     body: JSON.stringify(transaction),
   });
 }
 
-export function updateTransaction(transactionId, transaction, userId = CURRENT_USER_ID) {
+export function updateTransaction(userId, token, transactionId, transaction) {
   return request(`/api/users/${userId}/transactions/${transactionId}`, {
     method: 'PUT',
+    headers: authHeaders(token),
     body: JSON.stringify(transaction),
   });
 }
 
-export function deleteTransaction(transactionId, userId = CURRENT_USER_ID) {
+export function deleteTransaction(userId, token, transactionId) {
   return request(`/api/users/${userId}/transactions/${transactionId}`, {
     method: 'DELETE',
+    headers: authHeaders(token),
   });
 }

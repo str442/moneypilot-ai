@@ -19,7 +19,7 @@ public class DashboardController {
     }
 
     @GetMapping
-    public DashboardResponse getDashboard(@PathVariable Long userId) {
+    public DashboardResponse getDashboard(@PathVariable("userId") Long userId) {
         return dashboardService.getDashboardByUserId(userId);
     }
 }

@@ -20,13 +20,21 @@ public class DashboardService {
 
     private final TransactionRepository transactionRepository;
     private final UserRepository userRepository;
+    private final AuthorizationService authorizationService;
 
-    public DashboardService(TransactionRepository transactionRepository, UserRepository userRepository) {
+    public DashboardService(
+            TransactionRepository transactionRepository,
+            UserRepository userRepository,
+            AuthorizationService authorizationService
+    ) {
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
+        this.authorizationService = authorizationService;
     }
 
     public DashboardResponse getDashboardByUserId(Long userId) {
+        authorizationService.requireSelfOrAdmin(userId);
+
         userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 

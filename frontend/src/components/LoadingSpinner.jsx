@@ -1,4 +1,4 @@
-export default function LoadingSpinner({ label = 'Loading your financial cockpit...' }) {
+export default function LoadingSpinner({ label = 'Loading your financial dashboard...' }) {
   return (
     <div className="loading-state" role="status" aria-live="polite">
       <span className="spinner" />

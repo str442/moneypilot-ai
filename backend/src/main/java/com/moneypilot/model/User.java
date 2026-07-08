@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -23,6 +25,9 @@ public class User {
     private LocalDateTime createdAt;
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 
@@ -34,12 +39,14 @@ public class User {
         this.email = email;
         this.createdAt = LocalDateTime.now();
         this.password = pass;
+        this.role = Role.USER;
     }
 
     public User(String name, String email) {
         this.name = name;
         this.email = email;
         this.createdAt = LocalDateTime.now();
+        this.role = Role.USER;
     }
 
     public Long getId() {
@@ -88,6 +95,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Role getRole() {
+        return role == null ? Role.USER : role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role == null ? Role.USER : role;
     }
 
 }

@@ -33,7 +33,7 @@ public class TransactionController {
 
     @PostMapping
     public TransactionResponse createTransaction(
-            @PathVariable Long userId,
+            @PathVariable("userId") Long userId,
             @Valid @RequestBody CreateTransactionRequest request
     ) {
         return transactionService.createTransaction(userId, request);
@@ -43,15 +43,15 @@ public class TransactionController {
 
     @DeleteMapping("/{transactionId}")
     public void deleteTransaction(
-        @PathVariable Long userId,
-        @PathVariable Long transactionId
+        @PathVariable("userId") Long userId,
+        @PathVariable("transactionId") Long transactionId
     ) {
         transactionService.deleteTransaction(userId, transactionId);
     }
 
     @GetMapping
     public List<TransactionResponse> getTransactionsByUser(
-        @PathVariable Long userId,
+        @PathVariable("userId") Long userId,
         @RequestParam(required = false) TransactionType type,
         @RequestParam(required = false) TransactionCategory category,
         @RequestParam(required = false) Double minAmount,
@@ -72,8 +72,8 @@ public class TransactionController {
 
     @PutMapping("/{transactionId}")
     public TransactionResponse updateTransaction(
-            @PathVariable Long userId,
-            @PathVariable Long transactionId,
+            @PathVariable("userId") Long userId,
+            @PathVariable("transactionId") Long transactionId,
             @Valid @RequestBody CreateTransactionRequest request
     ) {
         return transactionService.updateTransaction(userId, transactionId, request);
