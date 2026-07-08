@@ -46,7 +46,7 @@ function friendlyError(error) {
   }
 
   if (message.toLowerCase().includes('failed to fetch')) {
-    return 'Unable to reach the backend at http://localhost:8080. Check that the API is running and accepts this frontend origin.';
+    return 'Unable to reach the backend. Check that the API is running and accepts this frontend origin.';
   }
 
   return message;
