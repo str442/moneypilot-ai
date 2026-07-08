@@ -21,11 +21,19 @@ public class User {
     private String name;
     private String email;
     private LocalDateTime createdAt;
+    private String password;
 
     @OneToMany(mappedBy = "user")
     private List<Transaction> transactions;
 
     public User() {
+    }
+
+    public User(String name, String email, String pass) {
+        this.name = name;
+        this.email = email;
+        this.createdAt = LocalDateTime.now();
+        this.password = pass;
     }
 
     public User(String name, String email) {
@@ -72,6 +80,14 @@ public class User {
 
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
 }
