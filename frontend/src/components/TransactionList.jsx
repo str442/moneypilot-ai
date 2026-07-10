@@ -1,5 +1,18 @@
 import EmptyState from './EmptyState.jsx';
 
+const categoryMeta = {
+  FOOD: { label: 'Food', icon: '🍽' },
+  TRANSPORT: { label: 'Transport', icon: '↗' },
+  LEISURE: { label: 'Leisure', icon: '◐' },
+  SHOPPING: { label: 'Shopping', icon: '◇' },
+  EDUCATION: { label: 'Education', icon: '✦' },
+  HEALTH: { label: 'Health', icon: '✚' },
+  HOUSING: { label: 'Housing', icon: '⌂' },
+  SALARY: { label: 'Salary', icon: '+' },
+  SCHOLARSHIP: { label: 'Scholarship', icon: '★' },
+  OTHER: { label: 'Other', icon: '•' },
+};
+
 const currency = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'EUR',
@@ -25,16 +38,21 @@ export default function TransactionList({ transactions, onEdit, onDelete, isDele
         <div className="transaction-list">
           {transactions.map((transaction) => {
             const isIncome = transaction.type === 'INCOME';
+            const meta = categoryMeta[transaction.category] || categoryMeta.OTHER;
             return (
-              <article className="transaction-card" key={transaction.id}>
+              <article className={`transaction-card ${isIncome ? 'transaction-income' : 'transaction-expense'}`} key={transaction.id}>
                 <div className="transaction-main">
-                  <span className={`type-pill ${isIncome ? 'income-pill' : 'expense-pill'}`}>
-                    {transaction.type}
+                  <span className="transaction-icon" aria-hidden="true">
+                    {meta.icon}
                   </span>
                   <div>
                     <h3>{transaction.description}</h3>
                     <p>
-                      {transaction.category} · {transaction.date}
+                      <span className={`type-pill ${isIncome ? 'income-pill' : 'expense-pill'}`}>
+                        {isIncome ? 'Income' : 'Expense'}
+                      </span>
+                      <span>{meta.label}</span>
+                      <span>{transaction.date}</span>
                     </p>
                   </div>
                 </div>
